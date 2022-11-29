@@ -1,3 +1,39 @@
+resource "kubernetes_service" "sabnzbd-server" {
+  metadata {
+    name = "sabnzbd-svc"
+    namespace = "media-services"
+  }
+  spec {
+       port {
+
+      protocol    = "TCP"
+      port        = 8080
+      target_port = 8080
+
+    }
+    selector = { service_name = "sabnzbd-server" }
+    type     = "ClusterIP"
+  }
+}
+
+#resource "kubernetes_service" "sabnzbd-server-lb" {
+#  metadata {
+#    name = "sabnzbd-svc-lb"
+#    namespace = "media-services"
+#  }
+#  spec {
+#       port {
+#
+#      protocol    = "TCP"
+#      port        = 8080
+#      target_port = 8080
+#
+#    }
+#    selector = { service_name = "sabnzbd-server" }
+#    type     = "LoadBalancer"
+#  }
+#}
+
 resource "kubernetes_deployment" "sabnzbd-server" {
   metadata {
     name      = "sabnzbd-server"

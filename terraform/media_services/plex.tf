@@ -1,3 +1,39 @@
+resource "kubernetes_service" "plex-server" {
+  metadata {
+    name = "plex-svc"
+    namespace = "media-services"
+  }
+  spec {
+       port {
+
+      protocol    = "TCP"
+      port        = 32400
+      target_port = 32400
+
+    }
+    selector = { service_name = "plex-server" }
+    type     = "ClusterIP"
+  }
+}
+
+#resource "kubernetes_service" "plex-server-lb" {
+#  metadata {
+#    name = "plex-svc-lb"
+#    namespace = "media-services"
+#  }
+#  spec {
+#       port {
+#
+#      protocol    = "TCP"
+#      port        = 32400
+#      target_port = 32400
+#
+#    }
+#    selector = { service_name = "plex-server" }
+#    type     = "LoadBalancer"
+#  }
+#}
+
 resource "kubernetes_deployment" "plex-server" {
   metadata {
     name      = "plex-server"
@@ -27,6 +63,10 @@ resource "kubernetes_deployment" "plex-server" {
             container_port = 32400
           }
           volume_mount {
+            mount_path = "/data"
+            name       = "nfs-data"
+          }
+          volume_mount {
             mount_path = "/mnt/movies"
             name       = "movies-mount-qnap"
           }
@@ -41,6 +81,12 @@ resource "kubernetes_deployment" "plex-server" {
           volume_mount {
             mount_path = "/mnt/tv_shows_2"
             name       = "tv-mount-synology"
+          }
+        }
+        volume {
+          name = "nfs-data"
+          persistent_volume_claim {
+             claim_name = kubernetes_persistent_volume_claim.plex-data.metadata[0].name
           }
         }
         volume {

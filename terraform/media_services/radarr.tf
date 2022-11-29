@@ -1,3 +1,39 @@
+resource "kubernetes_service" "radarr-server" {
+  metadata {
+    name = "radarr-svc"
+    namespace = "media-services"
+  }
+  spec {
+       port {
+
+      protocol    = "TCP"
+      port        = 7878
+      target_port = 7878
+
+    }
+    selector = { service_name = "radarr-server" }
+    type     = "ClusterIP"
+  }
+}
+
+#resource "kubernetes_service" "radarr-server-lb" {
+#  metadata {
+#    name = "radarr-svc-lb"
+#    namespace = "media-services"
+#  }
+#  spec {
+#       port {
+#
+#      protocol    = "TCP"
+#      port        = 7878
+#      target_port = 7878
+#
+#    }
+#    selector = { service_name = "radarr-server" }
+#    type     = "LoadBalancer"
+#  }
+#}
+
 resource "kubernetes_deployment" "radarr-server" {
   metadata {
     name      = "radarr-server"

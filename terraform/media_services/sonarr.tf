@@ -1,3 +1,39 @@
+resource "kubernetes_service" "sonarr-server" {
+  metadata {
+    name = "sonarr-svc"
+    namespace = "media-services"
+  }
+  spec {
+       port {
+
+      protocol    = "TCP"
+      port        = 8989
+      target_port = 8989
+
+    }
+    selector = { service_name = "sonarr-server" }
+    type     = "ClusterIP"
+  }
+}
+
+#resource "kubernetes_service" "sonarr-server-lb" {
+#  metadata {
+#    name = "sonarr-svc-lb"
+#    namespace = "media-services"
+#  }
+#  spec {
+#       port {
+#
+#      protocol    = "TCP"
+#      port        = 8989
+#      target_port = 8989
+#
+#    }
+#    selector = { service_name = "sonarr-server" }
+#    type     = "LoadBalancer"
+#  }
+#}
+
 resource "kubernetes_deployment" "sonarr-server" {
   metadata {
     name      = "sonarr-server"
@@ -24,7 +60,7 @@ resource "kubernetes_deployment" "sonarr-server" {
           name  = "sonarr-server"
           image = "linuxserver/sonarr:4.0.0-v4"
           port {
-            container_port = 7878
+            container_port = 8989
           }
           volume_mount {
             mount_path = "/mnt/movies"
