@@ -1,7 +1,7 @@
-resource "kubernetes_ingress_v1" "kube-dashboard" {
+resource "kubernetes_ingress_v1" "grafana" {
   metadata {
-    name        = "kube-dashboard"
-    namespace   = "kube-system"
+    name        = "grafana"
+    namespace   = "home-monitoring"
     annotations = {
       #     "nginx.ingress.kubernetes.io/rewrite-target": "/$2"
     }
@@ -9,7 +9,7 @@ resource "kubernetes_ingress_v1" "kube-dashboard" {
   spec {
     ingress_class_name = "home-ingress-controller"
     rule {
-      host = "kube-dashboard.home.local"
+      host = "grafana.home.local"
       http {
 
         path {
@@ -18,9 +18,9 @@ resource "kubernetes_ingress_v1" "kube-dashboard" {
           backend {
 
             service {
-              name = "kubernetes-dashboard"
+              name = "prometheus-deployment-grafana"
               port {
-                number = 8443
+                number = 80
               }
             }
           }
